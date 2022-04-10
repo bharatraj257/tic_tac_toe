@@ -1,3 +1,140 @@
+Last login: Sun Apr  3 08:42:06 on ttys001
+bharatraj@Kids-iMac ~ % cd tic_tac_toe 
+bharatraj@Kids-iMac tic_tac_toe % ls
+LICENSE			README.md		copy_tic_tac_toe.py	temp			tic_tac_toe.py
+bharatraj@Kids-iMac tic_tac_toe % vi tic_tac_toe.py 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import random
+from flask import Flask
+from flask import request
+import requests
+
+app = Flask("server")
+
+def invalid_check(slot):
+        b = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3']
+        for i in b:
+                if slot == i:
+                        if board[slot] == ' ':
+                                return(False)
+        return(True)
+
+def print_winner (winner):
+        if winner == 'X':
+                print('player X won')
+        elif winner == 'O':
+                print('player O won')
+
+def is_game_over():
+        checks = [['A1', 'A2', 'A3'], ['B1', 'B2', 'B3'], ['C1', 'C2', 'C3'], ['A1', 'B1', 'C1'], ['A2', 'B2', 'C2'], ['A3', 'B3', 'C3'], ['A1', 'B2', 'C3'], ['C1', 'B2', 'A3']]
+        for check in checks:
+                if board[check[0]] == board[check[1]] and board[check[0]] == board[check[2]] and board[check[0]] != ' ':
+                        print_winner(board[check[0]])
+                        return(True)
+                elif board['A1'] != ' ' and board['A2'] != ' ' and board['A3'] != ' ' and board['B1'] != ' ' and board['B2'] != ' ' and board['B3'] != ' ' and board['C1'] != ' ' and board['C2'] != ' ' and board['C3'] != ' ':
+                        print("Draw")
+                        return (True)
+        return (False)
+
+def run_server1():
+        app.run()
+
+def run_server2():
+        print_board(board)
+        slot_2 = input("Server, please enter a slot (A1, A2, A3...)")
+        while invalid_check(slot_2) == (True):
+                slot_2 = input("invalid move, please move again")
+                if invalid_check(slot_2) == (False):
+                        break
+        if is_game_over() == (False):
+                print_board(board)
+                board[slot_2] = myMarker
+                if is_game_over() == (True):
+                        print_winner(myMarker)
+                        return(True)
+                dict2 = {"message": "move", "marker": myMarker, "position": slot_2}
+                #url = "http://127.0.0.1:5000/command"
+                #response2 = requests.post(url, dict2)
+                #print(response2.text)
+                return dict2
+        else:
+                isgameover=is_game_over()
+@app.route('/')
+def hello():
+        return "Hello World Again!"
+
+@app.route('/command', methods=['GET', 'POST'])
+-- INSERT --
 import random
 from flask import Flask
 from flask import request
@@ -14,50 +151,45 @@ def invalid_check(slot):
 	return(True)    
 
 def print_winner (winner):
-	if winner == 'x':
-		print('player ' + player_1 + ', ' + 'sorry, you lost.')
-	elif winner == 'o':
-		print('player ' + player_1 + ', ' + 'great job! You won!')
+	if winner == 'X':
+		print('player X won')
+	elif winner == 'O':
+		print('player O won')
 
 def is_game_over():
 	checks = [['A1', 'A2', 'A3'], ['B1', 'B2', 'B3'], ['C1', 'C2', 'C3'], ['A1', 'B1', 'C1'], ['A2', 'B2', 'C2'], ['A3', 'B3', 'C3'], ['A1', 'B2', 'C3'], ['C1', 'B2', 'A3']]
 	for check in checks:
-		if board[check[0]] == board[check[1]] == board[check[2]] != ' ':
+		if board[check[0]] == board[check[1]] and board[check[0]] == board[check[2]] and board[check[0]] != ' ':
 			print_winner(board[check[0]])
 			return(True)
 		elif board['A1'] != ' ' and board['A2'] != ' ' and board['A3'] != ' ' and board['B1'] != ' ' and board['B2'] != ' ' and board['B3'] != ' ' and board['C1'] != ' ' and board['C2'] != ' ' and board['C3'] != ' ': 
 			print("Draw")
 			return (True)
-		else:
-			return (False)
+	return (False)
+
 def run_server1():
 	app.run()
 
 def run_server2():
 	print_board(board)
-
 	slot_2 = input("Server, please enter a slot (A1, A2, A3...)")
-	print("server app run middle(1)")
 	while invalid_check(slot_2) == (True):
 		slot_2 = input("invalid move, please move again")
 		if invalid_check(slot_2) == (False):
 			break
-	print("server app run middle(2)")
 	if is_game_over() == (False):
-		board[slot_2] = myMarker
-		print("server app run middle(3)")
 		print_board(board)
-		print("myMarker is", myMarker)
-		print("server app run middle(4)")
+		board[slot_2] = myMarker
+		if is_game_over() == (True):
+			print_winner(myMarker)
+			return(True)
 		dict2 = {"message": "move", "marker": myMarker, "position": slot_2}
 		#url = "http://127.0.0.1:5000/command"
 		#response2 = requests.post(url, dict2)
 		#print(response2.text)
-		print("server app run end")
 		return dict2
 	else:
-		pass
-		#to do: handle game over condition
+		isgameover=is_game_over()
 @app.route('/')
 def hello():
 	return "Hello World Again!"
@@ -65,7 +197,6 @@ def hello():
 @app.route('/command', methods=['GET', 'POST'])
 def command():
 	global myMarker
-	print("server app run start")
 	print(request.form)
 	response_dict = request.form.to_dict()
 	print(response_dict)
@@ -75,7 +206,6 @@ def command():
 		myMarker = "O"
 	else:
 		myMarker = "X"
-	print("printing:", myMarker)
 	if invalid_check(slot_s) == False:
 		board[slot_s] = response_dict['marker']
 		print_board(board)
@@ -83,7 +213,6 @@ def command():
 	if invalid_check(slot_s) == True:
 		ok = slot_not_okay()
 	response = run_server2()
-	print(response)
 	return response
 	#okay = {"status": "ok"}
 	#return okay
@@ -165,7 +294,6 @@ def client_1(slot_1):
 				break
 		isgameover = is_game_over()
 		if isgameover == (True):
-			print("game over")
 			break
 		if isgameover == (False):
 			dict = {"message": "move", "marker": marker, "position": slot_1}
@@ -251,22 +379,18 @@ elif player_choice == "c":
 		while invalid_check(slot_1) == (True):
 			slot_1 = input("invalid move, please move again")
 			if invalid_check(slot_1) == (False):
-				break 
+				board[slot_1] = marker
+				break
+		board[slot_1] = marker 
 		if is_game_over() == (False):
 			dict = {"message": "move", "marker": marker, "position": slot_1}
 			url = "http://127.0.0.1:5000/command"
 			response = requests.post(url, dict)
 			print(response.text)
 			dict = eval(response.text)
-			board[slot_1] = marker
-			print_board(board)
 			slot_2 = dict["position"]
 			board[slot_2] = dict["marker"]
 			print_board(board)
-			client_1(slot_1)
-	#		if dict["status"] == "ok":
-	#			board[slot_1] = marker
-	#			print_board(board)
 elif player_choice == "s":
 	run_server1()
 elif player_choice == "pc":
